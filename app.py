@@ -79,24 +79,40 @@ def get_hospital_prices(hospital_id):
         cursor = conn.cursor()
         
         log("Executing prices query")
+
         cursor.execute("""
-            SELECT TOP 10
-                pl.PlanName as [plan],
-                p.PayerName as payer,
-                pr.NegotiatedPercentage,
-                pr.EstimatedAmount
+            WITH avg_prices AS (
+            SELECT 
+                p.PayerName,
+                pl.PlanName,
+                ROUND(AVG(pr.EstimatedAmount), 2) AS avg_estimated_amount, 
+                ROUND(MIN(pr.EstimatedAmount), 2) AS min_estimated_amount,
+                ROUND(MAX(pr.EstimatedAmount), 2) AS max_estimated_amount,
+                ROUND(AVG(pr.NegotiatedPercentage), 2) AS avg_negotiated_percentage 
             FROM Price pr
-            JOIN [Plan_] pl ON pr.PlanID = pl.PlanID
-            JOIN Payer p ON pl.PayerID = p.PayerID
+            INNER JOIN Payer p ON pr.PayerID = p.PayerID
+            INNER JOIN Plan_ pl ON pr.PlanID = pl.PlanID
             WHERE pr.HospitalID = ?
-            ORDER BY pr.EstimatedAmount ASC
+            GROUP BY p.PayerName, pl.PlanName
+        )
+        SELECT TOP 10 
+            PayerName as payer, 
+            PlanName as [plan], 
+            avg_estimated_amount,
+            min_estimated_amount,
+            max_estimated_amount,
+            avg_negotiated_percentage
+            FROM avg_prices
+            ORDER BY avg_estimated_amount ASC;
         """, hospital_id)
         
         prices = [{
             'plan': row[0],
             'payer': row[1],
-            'negotiated_percentage': float(row[2]) if row[2] is not None else None,
-            'estimated_amount': float(row[3]) if row[3] is not None else None
+            'estimated_amount': float(row[2]) if row[2] is not None else None,
+            'min_estimated_amount': float(row[3]) if row[3] is not None else None,
+            'max_estimated_amount': float(row[4]) if row[4] is not None else None,
+            'negotiated_percentage': float(row[5]) if row[5] is not None else None
         } for row in cursor.fetchall()]
         
         log(f"Retrieved {len(prices)} price entries for hospital {hospital_id}")
