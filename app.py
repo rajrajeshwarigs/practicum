@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 
+AZURE_CONNECTION_STRING="Driver={ODBC Driver 18 for SQL Server};Server=tcp:practicum.database.windows.net,1433;Database=masterdata;Uid=practicum;Pwd=Yash0407;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;" 
+
 def log(message):
     print(f"[{datetime.now()}] {message}")
 
@@ -19,7 +21,7 @@ log("Flask app initialized with CORS")
 def get_db_connection():
     log("Attempting database connection")
     try:
-        conn = pyodbc.connect(os.getenv('AZURE_CONNECTION_STRING'))
+        conn = pyodbc.connect(AZURE_CONNECTION_STRING)
         log("Database connection successful")
         return conn
     except pyodbc.Error as e:
