@@ -65,9 +65,7 @@
       <tr>
         <th>Plan</th>
         <th>Payer</th>
-        <th>Amount ($)</th>
-        <th>Min Amount ($)</th>
-        <th>Max Amount ($)</th>
+        <th>Estimated Amount ($)</th>
         <th>Negotiated Percentage</th>
       </tr>
     </thead>
@@ -210,8 +208,6 @@
               <td>${price.plan || 'N/A'}</td>
               <td>${price.payer || 'N/A'}</td>
               <td>${price.estimated_amount !== null ? price.estimated_amount.toFixed(2) : 'N/A'}</td>
-              <td>${price.min_estimated_amount !== null ? price.min_estimated_amount.toFixed(2) : 'N/A'}</td>
-              <td>${price.max_estimated_amount !== null ? price.max_estimated_amount.toFixed(2) : 'N/A'}</td>
               <td>${price.negotiated_percentage !== null ? price.negotiated_percentage.toFixed(2) + '%' : 'N/A'}</td>
             `;
             tbody.appendChild(row);
