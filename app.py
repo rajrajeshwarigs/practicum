@@ -107,8 +107,8 @@ def get_hospital_prices(hospital_id):
         """, hospital_id)
         
         prices = [{
-            'plan': row[0],
-            'payer': row[1],
+            'payer': row[0],
+            'plan': row[1],
             'estimated_amount': float(row[2]) if row[2] is not None else None,
             'min_estimated_amount': float(row[3]) if row[3] is not None else None,
             'max_estimated_amount': float(row[4]) if row[4] is not None else None,
