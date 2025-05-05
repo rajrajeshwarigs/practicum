@@ -1,4 +1,5 @@
 Flask==3.0.2
 flask-cors==4.0.0
+--no-binary pyodbc
 pyodbc==5.0.1
 python-dotenv==1.0.1

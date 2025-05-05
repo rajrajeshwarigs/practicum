@@ -5,19 +5,17 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 
+# Connection string for Azure SQL Database
 AZURE_CONNECTION_STRING="Driver={ODBC Driver 18 for SQL Server};Server=tcp:practicum.database.windows.net,1433;Database=masterdata;Uid=practicum;Pwd=Yash0407;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;" 
 
 def log(message):
     print(f"[{datetime.now()}] {message}")
 
-# Load environment variables
-load_dotenv()
-log("Environment variables loaded")
-
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 log("Flask app initialized with CORS")
 
+# Get database connection
 def get_db_connection():
     log("Attempting database connection")
     try:
@@ -28,11 +26,13 @@ def get_db_connection():
         log(f"Database connection failed: {e}")
         return None
 
+# Serve the main page
 @app.route('/')
 def index():
     log("Serving index page")
     return render_template('practicum.html')
 
+# Get list of hospitals by region
 @app.route('/api/hospitals/<region>', methods=['GET'])
 def get_hospitals(region):
     log(f"Starting hospitals request for region: {region}")
@@ -66,6 +66,7 @@ def get_hospitals(region):
         conn.close()
         log("Connection closed in get_hospitals")
 
+# Get hospital prices
 @app.route('/api/hospital-prices/<int:hospital_id>', methods=['GET'])
 def get_hospital_prices(hospital_id):
     log(f"Starting hospital prices request for hospital_id: {hospital_id}")
@@ -128,6 +129,7 @@ def get_hospital_prices(hospital_id):
         conn.close()
         log("Connection closed in get_hospital_prices")
 
+# Get list of regions
 @app.route('/api/regions', methods=['GET'])
 def get_regions():
     log("Starting regions request")
@@ -159,277 +161,3 @@ def get_regions():
 if __name__ == '__main__':
     log("Starting Flask application")
     app.run(debug=True)
-
-# Database schema
-# [
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "CodeDescription",
-#     "COLUMN_NAME": "CodeID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "NO",
-#     "IS_IDENTITY": 1,
-#     "PRIMARY_KEY": "PK__CodeDesc__C6DE2C350EDFA523"
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "CodeDescription",
-#     "COLUMN_NAME": "CPTCode",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 50,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "CodeDescription",
-#     "COLUMN_NAME": "Description",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 500,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "HospitalID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "NO",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": "PK__Hospital__38C2E58FBC652A2E"
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "HospitalName",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 255,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "UpdatedOn",
-#     "DATA_TYPE": "date",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "Version",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 20,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "Region",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 100,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "HospitalAddress",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 255,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "LicenseNumber",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 20,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Hospital",
-#     "COLUMN_NAME": "ZipCode",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 20,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Payer",
-#     "COLUMN_NAME": "PayerID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "NO",
-#     "IS_IDENTITY": 1,
-#     "PRIMARY_KEY": "PK__Payer__0ADBE847577ADDBC"
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Payer",
-#     "COLUMN_NAME": "PayerName",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 255,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Plan_",
-#     "COLUMN_NAME": "PlanID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "NO",
-#     "IS_IDENTITY": 1,
-#     "PRIMARY_KEY": "PK__Plan___755C22D7A2727C1B"
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Plan_",
-#     "COLUMN_NAME": "PlanName",
-#     "DATA_TYPE": "nvarchar",
-#     "CHARACTER_MAXIMUM_LENGTH": 255,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Plan_",
-#     "COLUMN_NAME": "PayerID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "PriceID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "NO",
-#     "IS_IDENTITY": 1,
-#     "PRIMARY_KEY": "PK__Price__4957584FCC26DB13"
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "CodeID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "Gross",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "DiscountedCash",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "MinPrice",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "MaxPrice",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "EstimatedAmount",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "NegotiatedPercentage",
-#     "DATA_TYPE": "float",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "PayerID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "PlanID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   },
-#   {
-#     "TABLE_SCHEMA": "dbo",
-#     "TABLE_NAME": "Price",
-#     "COLUMN_NAME": "HospitalID",
-#     "DATA_TYPE": "int",
-#     "CHARACTER_MAXIMUM_LENGTH": null,
-#     "IS_NULLABLE": "YES",
-#     "IS_IDENTITY": 0,
-#     "PRIMARY_KEY": null
-#   }
-# ]
